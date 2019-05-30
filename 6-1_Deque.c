@@ -54,9 +54,9 @@ Deque CreateDeque()
 {
 	Deque q = (Deque)malloc(sizeof(struct DequeRecord));
 	PtrToNode p = (PtrToNode)malloc(sizeof(struct Node));
-	p->Last = NULL;
-	p->Next = NULL;
-	q->Front = q->Rear = p;
+	p->Last = NULL;		//单独队头没有前节点
+	p->Next = NULL;		//单独队头没有后节点
+	q->Front = q->Rear = p;		//队头和队尾指向同一节点
 	return q;
 }
 int Push(ElementType X, Deque D)
@@ -66,14 +66,14 @@ int Push(ElementType X, Deque D)
 		return 0;
 	p->Element = X;
 	PtrToNode t = D->Front->Next;
-	if (t == NULL)
+	if (t == NULL)		//t为空，即插入第一个节点，队尾需要改变指向
 	{
 		D->Front->Next = p;
 		p->Last = D->Front;
 		D->Rear = p;
 		return 1;
 	}
-	else
+	else		//t不为空，插入头节点不需要改变队尾指向
 	{
 		p->Last = D->Front;
 		D->Front->Next = p;
@@ -87,13 +87,13 @@ ElementType Pop(Deque D)
 	if (D->Front == D->Rear) return ERROR;
 	PtrToNode t = D->Front->Next;
 	ElementType e = t->Element;
-	if (t->Next == NULL)
+	if (t->Next == NULL)		//t的下一节点为空，即删除队列中的最后一个元素，需要改变队尾指向
 	{
 		D->Front->Next = NULL;
 		D->Front->Last = NULL;
 		D->Rear = D->Front;
 	}
-	else
+	else		//t不为空，不需要改变队尾指向
 	{
 		D->Front->Next = t->Next;
 		t->Next->Last = D->Front;
@@ -101,6 +101,7 @@ ElementType Pop(Deque D)
 		return e;
 	}
 }
+//尾插和尾出较为简单，不需要判断是否改变队尾和队头指向
 int Inject(ElementType X, Deque D)
 {
 	PtrToNode p = (PtrToNode)malloc(sizeof(struct Node));
